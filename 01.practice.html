@@ -1,0 +1,86 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>좋아요</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+</head>
+<body>
+    <div id="root">
+        <div v-if="liked">좋아요 눌렀음!</div> <!-- v-if v-else는 형제 -->
+        <button v-else v-on:click="onClickButton">Like</button>
+        <div>{{myText}}</div>
+        <span v-bind:title="message">내 위에 잠시 마우스를 올려보세요</span>
+        <input type="text" v-bind:placeholder="ph" />
+    </div>
+    <hr/>
+    <div id="sub">
+        <ul>
+            <li v-for="el in myList">{{el.val}}</li>
+        </ul>
+        <div>{{reverseTarget}}</div>
+        <button v-on:click="onReverseText">뒤집기 버튼</button>
+        <div>{{model}}</div>
+        <input v-model="model"/>
+    </div>
+    <hr/>
+    <div id="comp">
+        <ul>
+            <c-exp v-for="el in list"
+                v-bind:k="el.id"
+                v-bind:v="el.text"
+            ></c-exp>
+        </ul>
+    </div>
+</body>
+<script>
+    const root = new Vue({
+        el: "#root"
+        ,data: {
+            liked: false
+            ,myText: '문자열'
+            ,message: '오늘은 ' + new Date() + '입니다'
+            ,ph: '플레이스홀더'
+        }
+        ,methods: {
+            onClickButton(){
+                this.liked = true; // this는 data를 가리킨다. this.liked == data.liked
+            }
+        }
+    });
+    
+    const sub = new Vue({
+        el: "#sub"
+        ,data: {
+            myList: [
+                {val: '001'}
+                ,{val: '002'}
+                ,{val: '003'}
+            ]
+            ,reverseTarget: '뒤집을 텍스트'
+            ,model: '기본 메시지'
+        }
+        ,methods: {
+            onReverseText: function(){
+                this.reverseTarget = this.reverseTarget.split('').reverse().join('');
+            }
+        }
+    });
+
+    Vue.component('c-exp', {
+        props: ['k', 'v']
+        ,template: '<li>{{k}} - {{v}}</li>'
+    });
+    const component = new Vue({
+        el: '#comp'
+        ,data: {
+            list: [
+                {id: 'a', text: '00'}
+                ,{id: 'b', text: '11'}
+            ]
+        }
+    });
+</script>
+</html>
